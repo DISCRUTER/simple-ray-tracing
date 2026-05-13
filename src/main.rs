@@ -1,13 +1,14 @@
 mod vec3;
+mod color;
+mod point;
+mod ray;
 
 use log::info;
 
-use crate::vec3::{ColorKind, PointKind, Vec3};
+use crate::color::Color;
+// use crate::point::Point;
+// use crate::ray::Ray;
 
-
-// Setting alias for kinds
-type Color = Vec3<ColorKind>;
-type Point = Vec3<PointKind>;
 
 fn main() {
     // Intializing Logger
@@ -26,15 +27,13 @@ fn main() {
     for i in 0..image_height {
         info!("\rScanlines remaining: {} ", image_height-i);
         for j in 0..image_width {
-            let r = j as f64 / (image_width - 1) as f64;
-            let g = i as f64 / (image_height - 1) as f64;
-            let b = 0.0;
 
-            let ir = (255.999 * r) as u8;
-            let ig = (255.999 * g) as u8;
-            let ib = (255.999 * b) as u8;
+            let pixel_color = Color::new_from(
+                j as f32 / (image_width - 1) as f32,
+                j as f32 / (image_width - 1) as f32,
+                0.0);
 
-            println!("{} {} {}\n", ir, ig, ib);
+            println!("{}\n", pixel_color);
         }
     }
     info!("\rDone.             \n");
