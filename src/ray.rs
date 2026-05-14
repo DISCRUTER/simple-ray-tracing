@@ -16,3 +16,4 @@ impl Ray {
         self.direction
     }
 }
+

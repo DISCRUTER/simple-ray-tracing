@@ -1,7 +1,5 @@
 use std::marker::PhantomData;
-use std::ops::{AddAssign, MulAssign, DivAssign};
-
-
+use std::ops::{AddAssign, DivAssign, MulAssign};
 
 // Empty markers
 #[derive(Debug, Copy, Clone)]
@@ -15,19 +13,28 @@ pub struct Vec3<T> {
     x: f32,
     y: f32,
     z: f32,
-    _kind: PhantomData<T>
+    _kind: PhantomData<T>,
 }
-
 
 // Implementation of common vector operations
 
 impl<T> Vec3<T> {
     // Constructors
     pub fn new() -> Self {
-        Self {x: 0.0, y: 0.0, z: 0.0, _kind: PhantomData}
+        Self {
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
+            _kind: PhantomData,
+        }
     }
     pub fn new_from(x: f32, y: f32, z: f32) -> Self {
-        Self {x, y, z, _kind: PhantomData}
+        Self {
+            x,
+            y,
+            z,
+            _kind: PhantomData,
+        }
     }
     // Accessor
     pub fn x(self) -> f32 {
@@ -40,7 +47,6 @@ impl<T> Vec3<T> {
         self.z
     }
 }
-
 
 // Operator overloading
 impl<T> AddAssign for Vec3<T> {
@@ -162,4 +168,3 @@ impl<T> DivAssign<f32> for Vec3<T> {
 // }
 
 // Color Utility
-
