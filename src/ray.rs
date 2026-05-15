@@ -1,5 +1,6 @@
 use crate::point::Point;
 
+#[derive(Debug, Copy, Clone)]
 pub struct Ray {
     origin: Point,
     direction: Point,
@@ -15,5 +16,8 @@ impl Ray {
     pub fn direction(self) -> Point {
         self.direction
     }
+    pub fn at(self, t: f32) -> Point {
+        self.origin() + self.direction() * t
+    } 
 }
 

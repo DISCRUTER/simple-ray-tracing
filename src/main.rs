@@ -9,8 +9,32 @@ use crate::color::Color;
 use crate::point::Point;
 use crate::ray::Ray;
 
-fn ray_color(_ray: &Ray) -> Color {
-    Color::new()
+
+fn hit_sphere(center: Point, radius: f32, ray: &Ray) -> f32 {
+    let oc = center - ray.origin();
+    let a = ray.direction().length_squared();
+    let h = oc.dot(&ray.direction());
+    let c = oc.length_squared() - radius*radius;
+    let discriminant = h*h - 4.0*a*c;
+    if discriminant < 0.0 {
+        return -1.0;
+    } else {
+        return (h - discriminant.sqrt()) / a;
+    }
+}
+
+// Function to output ray color
+fn ray_color(ray: &Ray) -> Color {
+    let t = hit_sphere(Point::new_from(0.0, 0.0, -1.0), 0.5, &ray);
+    if t > 0.0 {
+        let n: vec3::Vec3<vec3::PointKind> = (ray.at(t) - Point::new_from(0.0, 0.0, -1.0)).unit_vector();
+        return Color::new_from(n.x()+1.0, n.y()+1.0, n.z()+1.0) * 0.5;
+    }
+
+    let unit_direction = ray.direction().unit_vector();
+    let a = 0.5 * (unit_direction.y() + 1.0);
+    info!("Value of a: {}", a); // error in alpha
+    Color::new_from(1.0, 1.0, 1.0) * (1.0 - a) + Color::new_from(0.5, 0.7, 1.0) * a
 }
 
 
@@ -50,8 +74,9 @@ fn main() {
     for i in 0..image_height {
         info!("\rScanlines remaining: {} ", image_height - i);
         for j in 0..image_width {
-            let pixel_center = pixel00_loc + (pixel_delta_u * j as f32) +( pixel_delta_v * 1 as f32);
+            let pixel_center = pixel00_loc + (pixel_delta_u * j as f32) + (pixel_delta_v * i as f32);
             let ray_direction = pixel_center - camera_center;
+            info!("Ray direction: {}", ray_direction);
             let ray = Ray::new(camera_center, ray_direction);
 
             let pixel_color = ray_color(&ray);

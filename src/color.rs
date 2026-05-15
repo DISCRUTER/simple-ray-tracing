@@ -1,4 +1,6 @@
-use crate::vec3::{Vec3, ColorKind};
+use std::ops::{Add, Mul};
+
+use crate::vec3::{ColorKind, Vec3};
 
 // Alias
 pub type Color = Vec3<ColorKind>;
@@ -16,5 +18,27 @@ impl std::fmt::Display for Color {
         let ib = (255.999 * b) as u8;
 
         write!(f, "{}, {}, {}", ir, ig, ib)
+    }
+}
+
+// Operation overloading
+impl Add for Color {
+    type Output = Color;
+    fn add(self, rhs: Self) -> Self::Output {
+        Color::new_from(
+            self.x() + rhs.x(),
+            self.y() + rhs.y(),
+            self.z() + rhs.z()
+        )
+    }
+}
+impl Mul<f32> for Color {
+    type Output = Color;
+    fn mul(self, rhs: f32) -> Self::Output {
+        Color::new_from(
+            self.x() * rhs,
+            self.y() * rhs,
+            self.z() * rhs
+        )
     }
 }

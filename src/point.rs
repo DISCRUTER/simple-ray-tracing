@@ -27,7 +27,7 @@ impl Point {
         self.length_squared().sqrt()
     }
     pub fn dot(&self, other: &Point) -> f32 {
-        self.x() * other.x() + self.y() * other.y() + self.z() + other.z()
+        self.x()*other.x() + self.y()*other.y() + self.z()*other.z()
     }
     pub fn cross(&self, other: &Point) -> Point {
         Point::new_from(
