@@ -1,10 +1,9 @@
 use std::ops::{Add, Mul};
 
-use crate::vec3::{ColorKind, Vec3};
+use crate::rtweekend::vec3::{ColorKind, Vec3};
 
 // Alias
 pub type Color = Vec3<ColorKind>;
-
 
 // Display Trait
 impl std::fmt::Display for Color {
@@ -25,20 +24,12 @@ impl std::fmt::Display for Color {
 impl Add for Color {
     type Output = Color;
     fn add(self, rhs: Self) -> Self::Output {
-        Color::new_from(
-            self.x() + rhs.x(),
-            self.y() + rhs.y(),
-            self.z() + rhs.z()
-        )
+        Color::new_from(self.x() + rhs.x(), self.y() + rhs.y(), self.z() + rhs.z())
     }
 }
 impl Mul<f32> for Color {
     type Output = Color;
     fn mul(self, rhs: f32) -> Self::Output {
-        Color::new_from(
-            self.x() * rhs,
-            self.y() * rhs,
-            self.z() * rhs
-        )
+        Color::new_from(self.x() * rhs, self.y() * rhs, self.z() * rhs)
     }
 }

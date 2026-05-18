@@ -2,13 +2,13 @@ use std::marker::PhantomData;
 use std::ops::{AddAssign, DivAssign, MulAssign};
 
 // Empty markers
-#[derive(Debug, Copy, Clone)]
+#[derive(Default, Debug, Copy, Clone)]
 pub struct ColorKind;
-#[derive(Debug, Copy, Clone)]
+#[derive(Default, Debug, Copy, Clone)]
 pub struct PointKind;
 
 // Base Vector struct
-#[derive(Debug, Copy, Clone)]
+#[derive(Default, Debug, Copy, Clone)]
 pub struct Vec3<T> {
     x: f32,
     y: f32,
@@ -37,13 +37,13 @@ impl<T> Vec3<T> {
         }
     }
     // Accessor
-    pub fn x(self) -> f32 {
+    pub fn x(&self) -> f32 {
         self.x
     }
-    pub fn y(self) -> f32 {
+    pub fn y(&self) -> f32 {
         self.y
     }
-    pub fn z(self) -> f32 {
+    pub fn z(&self) -> f32 {
         self.z
     }
 }
