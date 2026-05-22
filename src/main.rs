@@ -9,15 +9,13 @@ use log::info;
 use crate::hittable::{Hit_Record, Hittable};
 use crate::hittable_list::HittableList;
 use crate::point::Point;
-use crate::rtweekend::color::Color;
-use crate::rtweekend::ray::Ray;
-use crate::rtweekend::vec3;
+use crate::rtweekend::{color::Color, interval::Interval, ray::Ray, vec3};
 use crate::sphere::Sphere;
 
 // Function to output ray color
 fn ray_color(ray: &Ray, world: &impl Hittable) -> Color {
     let mut rec = Hit_Record::default();
-    if world.hit(ray, 0.0, f32::INFINITY, &mut rec) {
+    if world.hit(ray, Interval::new_from(0.0, f32::INFINITY), &mut rec) {
         let normal = rec.get_normal();
         return Color::new_from(normal.x() + 1.0, normal.y() + 1.0, normal.z() + 1.0) * 0.5;
     }
@@ -40,8 +38,14 @@ fn main() {
     // World
     let mut world = HittableList::default();
 
-    world.add(Box::new(Sphere::new_from(Point::new_from(0.0, 0.0, -1.0), 0.5)));
-    world.add(Box::new(Sphere::new_from(Point::new_from(0.0, -100.5, -1.0), 100.0)));
+    world.add(Box::new(Sphere::new_from(
+        Point::new_from(0.0, -100.5, -1.0),
+        100.0,
+    )));
+    world.add(Box::new(Sphere::new_from(
+        Point::new_from(0.0, 0.0, -1.0),
+        0.5,
+    )));
 
     // Camera
     let focal_length: f32 = 1.0;

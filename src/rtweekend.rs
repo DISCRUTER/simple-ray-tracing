@@ -9,5 +9,6 @@ pub fn degree_to_radians(degree: f32) -> f32 {
 
 // Commmon Modules
 pub mod color;
+pub mod interval;
 pub mod ray;
 pub mod vec3;

@@ -1,7 +1,7 @@
 use crate::{
     hittable::{Hit_Record, Hittable},
     point::Point,
-    rtweekend::ray::Ray,
+    rtweekend::{interval::Interval, ray::Ray},
 };
 
 pub struct Sphere {
@@ -11,7 +11,10 @@ pub struct Sphere {
 
 impl Sphere {
     pub fn new() -> Self {
-        Self { center: Point::default(), radius: 0.0 }
+        Self {
+            center: Point::default(),
+            radius: 0.0,
+        }
     }
     pub fn new_from(center: Point, radius: f32) -> Self {
         Self { center, radius }
@@ -19,7 +22,7 @@ impl Sphere {
 }
 
 impl Hittable for Sphere {
-    fn hit(&self, ray: &Ray, ray_tmin: f32, ray_tmax: f32, rec: &mut Hit_Record) -> bool {
+    fn hit(&self, ray: &Ray, ray_t: Interval, rec: &mut Hit_Record) -> bool {
         let oc = self.center - ray.origin();
         let a = ray.direction().length_squared();
         let h = oc.dot(&ray.direction());
@@ -35,9 +38,9 @@ impl Hittable for Sphere {
         // Find the nearest root that lies in the acceptable range
         let mut root = (h - sqrtd) / a;
 
-        if root <= ray_tmin || ray_tmax <= root {
+        if !ray_t.surrounds(root) {
             root = (h + sqrtd) / a;
-            if root <= ray_tmin || ray_tmax <= root {
+            if !ray_t.surrounds(root) {
                 return false;
             }
         }
