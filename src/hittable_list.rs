@@ -7,10 +7,6 @@ pub struct HittableList {
 }
 
 impl HittableList {
-    // pub fn hittable_list(object: Box<dyn Hittable>) {
-    //     self.add(object);
-    // }
-
     pub fn add(&mut self, object: Box<dyn Hittable>) {
         self.objects.push(object);
     }
@@ -35,6 +31,7 @@ impl Hittable for HittableList {
                 hit_anything = true;
                 closest_so_far = temp_rec.get_t();
                 rec.set(&temp_rec);
+                println!("___________________Hit");
             }
         }
 
