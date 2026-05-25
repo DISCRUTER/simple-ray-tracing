@@ -35,13 +35,13 @@ impl Hit_Record {
     pub fn get_p(&self) -> Point {
         self.p
     }
-    pub fn set_front_face(&mut self, ray: &Ray, outward_normal: Point) {
+    pub fn set_face_normal(&mut self, ray: &Ray, outward_normal: Point) {
         // Check if the ray is coming from inside or outside
         self.front_face = ray.direction().dot(&outward_normal) < 0.0;
         self.normal = if self.front_face {
             outward_normal
         } else {
-            outward_normal
+            outward_normal * -1.0
         }
     }
 }

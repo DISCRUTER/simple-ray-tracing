@@ -41,6 +41,7 @@ impl Camera {
         // Setting Image height
         self.image_height = (self.image_width as f32 / self.aspect_ratio) as i32;
         self.image_height = self.image_height.clamp(1, self.image_height);
+        
 
         // Assigning camera center
         self.camera_center = Point::new();
@@ -56,21 +57,21 @@ impl Camera {
         let viewport_v = Point::new_from(0.0, -viewport_height, 0.0);
 
         // Calculating horizontal & vertical delta
-        let pixel_delta_u = viewport_u / self.image_width as f32;
-        let pixel_delta_v = viewport_v / self.image_height as f32;
+        self.pixel_delta_u = viewport_u / self.image_width as f32;
+        self.pixel_delta_v = viewport_v / self.image_height as f32;
 
         // Calculating upper-left pixel
         let viewport_upper_left = self.camera_center
             - Point::new_from(0.0, 0.0, focal_length)
             - (viewport_u / 2.0)
             - (viewport_v / 2.0);
-        self.pixel00_loc = viewport_upper_left + ((pixel_delta_u + pixel_delta_v) * 0.5);
+        self.pixel00_loc = viewport_upper_left + ((self.pixel_delta_u + self.pixel_delta_v) * 0.5);
     }
 }
 
 fn ray_color(ray: &Ray, world: &impl Hittable) -> Color {
     let mut rec = Hit_Record::default();
-    if world.hit(ray, Interval::new_from(0.0, f32::INFINITY), &mut rec) {
+    if world.hit(ray, Interval::new_from(0.001, f32::INFINITY), &mut rec) {
         let normal = rec.get_normal();
         return Color::new_from(normal.x() + 1.0, normal.y() + 1.0, normal.z() + 1.0) * 0.5;
     }

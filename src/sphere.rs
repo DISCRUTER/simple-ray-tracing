@@ -26,9 +26,9 @@ impl Hittable for Sphere {
         let oc = self.center - ray.origin();
         let a = ray.direction().length_squared();
         let h = oc.dot(&ray.direction());
-        let c = oc.length_squared() - self.radius * self.radius;
+        let c = oc.length_squared() - (self.radius * self.radius);
 
-        let discriminant = h * h - a * c;
+        let discriminant = (h * h) - (a * c);
         if discriminant < 0.0 {
             return false;
         }
@@ -49,7 +49,7 @@ impl Hittable for Sphere {
         rec.set_t(root);
         rec.set_p(ray.at(rec.get_t()));
         let outward_normal = (rec.get_p() - self.center) / self.radius;
-        rec.set_front_face(ray, outward_normal);
+        rec.set_face_normal(ray, outward_normal);
         return true;
     }
 }
