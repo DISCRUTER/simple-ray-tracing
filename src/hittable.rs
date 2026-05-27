@@ -4,14 +4,14 @@ use crate::{
 };
 
 #[derive(Default, Debug, Copy, Clone)]
-pub struct Hit_Record {
+pub struct HitRecord {
     p: Point,
     normal: Point,
     t: f32,
     front_face: bool,
 }
 
-impl Hit_Record {
+impl HitRecord {
     pub fn set(&mut self, other: &Self) {
         self.set_t(other.get_t());
         self.set_p(other.get_p());
@@ -47,5 +47,5 @@ impl Hit_Record {
 }
 
 pub trait Hittable {
-    fn hit(&self, ray: &Ray, ray_t: Interval, rec: &mut Hit_Record) -> bool;
+    fn hit(&self, ray: &Ray, ray_t: Interval, rec: &mut HitRecord) -> bool;
 }

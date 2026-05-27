@@ -1,4 +1,4 @@
-use crate::hittable::{Hit_Record, Hittable};
+use crate::hittable::{HitRecord, Hittable};
 use crate::rtweekend::{interval::Interval, ray::Ray};
 
 #[derive(Default)]
@@ -17,7 +17,7 @@ impl HittableList {
 }
 
 impl Hittable for HittableList {
-    fn hit(&self, ray: &Ray, ray_t: Interval, rec: &mut Hit_Record) -> bool {
+    fn hit(&self, ray: &Ray, ray_t: Interval, rec: &mut HitRecord) -> bool {
         let mut hit_anything = false;
         let mut closest_so_far = ray_t.get_max();
 

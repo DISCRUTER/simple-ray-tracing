@@ -1,5 +1,6 @@
 use std::marker::PhantomData;
 use std::ops::{AddAssign, DivAssign, MulAssign};
+use crate::rtweekend::{random_f32, random_range_f32};
 
 // Empty markers
 #[derive(Default, Debug, Copy, Clone)]
@@ -33,6 +34,23 @@ impl<T> Vec3<T> {
             x,
             y,
             z,
+            _kind: PhantomData,
+        }
+    }
+    // Random vector generator
+    pub fn random() -> Self {
+        Self {
+            x: random_f32(),
+            y: random_f32(),
+            z: random_f32(),
+            _kind: PhantomData,
+        }
+    }
+    pub fn random_range(min: f32, max: f32) -> Self {
+        Self {
+            x: random_range_f32(min, max),
+            y: random_range_f32(min, max),
+            z: random_range_f32(min, max),
             _kind: PhantomData,
         }
     }

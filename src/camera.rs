@@ -1,4 +1,4 @@
-use crate::hittable::{Hit_Record, Hittable};
+use crate::hittable::{HitRecord, Hittable};
 use crate::point::Point;
 use crate::rtweekend::random_f32;
 use crate::rtweekend::{color::Color, interval::Interval, ray::Ray};
@@ -84,11 +84,14 @@ impl Camera {
     }
 }
 
+// Return final color after hit
 fn ray_color(ray: &Ray, world: &impl Hittable) -> Color {
-    let mut rec = Hit_Record::default();
+    let mut rec = HitRecord::default();
     if world.hit(ray, Interval::new_from(0.001, f32::INFINITY), &mut rec) {
-        let normal = rec.get_normal();
-        return Color::new_from(normal.x() + 1.0, normal.y() + 1.0, normal.z() + 1.0) * 0.5;
+        // let normal = rec.get_normal();
+        // return Color::new_from(normal.x() + 1.0, normal.y() + 1.0, normal.z() + 1.0) * 0.5;
+        let direction: Point = Point::random_on_hemisphere(rec.get_normal());
+        return ray_color(&Ray::new(rec.get_p(), direction), world) * 0.5
     }
 
     let unit_direction = ray.direction().unit_vector();

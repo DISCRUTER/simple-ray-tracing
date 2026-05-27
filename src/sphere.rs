@@ -1,5 +1,5 @@
 use crate::{
-    hittable::{Hit_Record, Hittable},
+    hittable::{HitRecord, Hittable},
     point::Point,
     rtweekend::{interval::Interval, ray::Ray},
 };
@@ -22,7 +22,7 @@ impl Sphere {
 }
 
 impl Hittable for Sphere {
-    fn hit(&self, ray: &Ray, ray_t: Interval, rec: &mut Hit_Record) -> bool {
+    fn hit(&self, ray: &Ray, ray_t: Interval, rec: &mut HitRecord) -> bool {
         let oc = self.center - ray.origin();
         let a = ray.direction().length_squared();
         let h = oc.dot(&ray.direction());
