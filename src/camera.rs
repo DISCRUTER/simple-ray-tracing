@@ -1,5 +1,6 @@
 use crate::hittable::{Hit_Record, Hittable};
 use crate::point::Point;
+use crate::rtweekend::random_f32;
 use crate::rtweekend::{color::Color, interval::Interval, ray::Ray};
 
 #[derive(Debug, Default)]
@@ -7,12 +8,14 @@ pub struct Camera {
     // Public fields
     pub aspect_ratio: f32,
     pub image_width: i32,
+    pub sample_per_pixel: i32,
     // Private fields
     image_height: i32,
     camera_center: Point,
     pixel00_loc: Point,
     pixel_delta_u: Point,
     pixel_delta_v: Point,
+    pixel_samples_scale: f32,
 }
 
 impl Camera {
@@ -25,14 +28,12 @@ impl Camera {
 
         for i in 0..self.image_height {
             for j in 0..self.image_width {
-                let pixel_center = self.pixel00_loc
-                    + (self.pixel_delta_u * j as f32)
-                    + (self.pixel_delta_v * i as f32);
-                let ray_direction = pixel_center - self.camera_center;
-                let ray = Ray::new(self.camera_center, ray_direction);
-
-                let pixel_color = ray_color(&ray, world);
-                println!("{}\n", pixel_color);
+                let mut pixel_color = Color::new();
+                for _ in 0..self.sample_per_pixel {
+                    let r: Ray = self.get_ray(j, i);
+                    pixel_color += ray_color(&r, world)
+                }
+                println!("{}\n", pixel_color * self.pixel_samples_scale);
             }
         }
     }
@@ -42,7 +43,9 @@ impl Camera {
         self.image_height = (self.image_width as f32 / self.aspect_ratio) as i32;
         self.image_height = self.image_height.clamp(1, self.image_height);
         
-
+        // Setting pixel_samples_scale
+        self.pixel_samples_scale = 1.0 / self.sample_per_pixel as f32;
+        
         // Assigning camera center
         self.camera_center = Point::new();
 
@@ -67,6 +70,18 @@ impl Camera {
             - (viewport_v / 2.0);
         self.pixel00_loc = viewport_upper_left + ((self.pixel_delta_u + self.pixel_delta_v) * 0.5);
     }
+
+    fn get_ray(&self, i: i32, j: i32) -> Ray {
+        // Random sampling pixels around pixel i, j
+        let offset = sample_square();
+        let pixel_sample = self.pixel00_loc
+            + (self.pixel_delta_u * (i as f32 + offset.x()))
+            + (self.pixel_delta_v * (j as f32 + offset.y()));
+
+        let ray_origin = self.camera_center;
+        let ray_direction = pixel_sample - ray_origin;
+        Ray::new(ray_origin, ray_direction)
+    }
 }
 
 fn ray_color(ray: &Ray, world: &impl Hittable) -> Color {
@@ -79,4 +94,9 @@ fn ray_color(ray: &Ray, world: &impl Hittable) -> Color {
     let unit_direction = ray.direction().unit_vector();
     let a = (unit_direction.y() + 1.0) * 0.5;
     return Color::new_from(1.0, 1.0, 1.0) * (1.0 - a) + Color::new_from(0.5, 0.7, 1.0) * a;
+}
+
+fn sample_square() -> Point {
+    // Return the vector to a random point in the [-.5, -.5]-[+.5, +.5] unit square
+    Point::new_from(random_f32() - 0.5, random_f32() - 0.5, 0.0)
 }

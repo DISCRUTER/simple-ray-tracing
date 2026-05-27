@@ -1,6 +1,9 @@
 use std::ops::{Add, Mul};
 
-use crate::rtweekend::vec3::{ColorKind, Vec3};
+use crate::rtweekend::{
+    interval::{Interval},
+    vec3::{ColorKind, Vec3}
+};
 
 // Alias
 pub type Color = Vec3<ColorKind>;
@@ -12,9 +15,10 @@ impl std::fmt::Display for Color {
         let g = self.y();
         let b = self.z();
         // Converting [0, 1] to [0, 255]
-        let ir = (255.999 * r) as u8;
-        let ig = (255.999 * g) as u8;
-        let ib = (255.999 * b) as u8;
+        let intensity = Interval::new_from(0.0, 0.999);
+        let ir = (256.0 * intensity.clamp(r)) as u8;
+        let ig = (256.0 * intensity.clamp(g)) as u8;
+        let ib = (256.0 * intensity.clamp(b)) as u8;
 
         write!(f, "{}, {}, {}", ir, ig, ib)
     }
