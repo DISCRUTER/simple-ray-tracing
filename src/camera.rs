@@ -6,16 +6,17 @@ use crate::rtweekend::{color::Color, interval::Interval, ray::Ray};
 #[derive(Debug, Default)]
 pub struct Camera {
     // Public fields
-    pub aspect_ratio: f32,
-    pub image_width: i32,
-    pub sample_per_pixel: i32,
+    pub aspect_ratio: f32,          // Ratio of image width over height
+    pub image_width: i32,           // Rendered image width in pixel count
+    pub sample_per_pixel: i32,      // Count of random samples for each pixel
+    pub max_depth: i32,             // Maximun number of ray bounces
     // Private fields
-    image_height: i32,
-    camera_center: Point,
-    pixel00_loc: Point,
-    pixel_delta_u: Point,
-    pixel_delta_v: Point,
-    pixel_samples_scale: f32,
+    image_height: i32,              // Rendered image width in pixel count
+    camera_center: Point,           // Camera center
+    pixel00_loc: Point,             // Location of the first pixel at left-top
+    pixel_delta_u: Point,           // Distance between two horizontal pixel
+    pixel_delta_v: Point,           // Distance between two vertical pixel
+    pixel_samples_scale: f32,       // Averaging value for samped colors | Inversely proportional to `sample_per_pixel`
 }
 
 impl Camera {
@@ -31,7 +32,7 @@ impl Camera {
                 let mut pixel_color = Color::new();
                 for _ in 0..self.sample_per_pixel {
                     let r: Ray = self.get_ray(j, i);
-                    pixel_color += ray_color(&r, world)
+                    pixel_color += ray_color(&r, self.max_depth, world)
                 }
                 println!("{}\n", pixel_color * self.pixel_samples_scale);
             }
@@ -85,13 +86,17 @@ impl Camera {
 }
 
 // Return final color after hit
-fn ray_color(ray: &Ray, world: &impl Hittable) -> Color {
+fn ray_color(ray: &Ray, depth: i32, world: &impl Hittable) -> Color {
+    // If max_depth exceeded return
+    if depth <= 0 {
+        return Color::new();
+    }
     let mut rec = HitRecord::default();
     if world.hit(ray, Interval::new_from(0.001, f32::INFINITY), &mut rec) {
         // let normal = rec.get_normal();
         // return Color::new_from(normal.x() + 1.0, normal.y() + 1.0, normal.z() + 1.0) * 0.5;
         let direction: Point = Point::random_on_hemisphere(rec.get_normal());
-        return ray_color(&Ray::new(rec.get_p(), direction), world) * 0.5
+        return ray_color(&Ray::new(rec.get_p(), direction), depth-1, world) * 0.5
     }
 
     let unit_direction = ray.direction().unit_vector();
