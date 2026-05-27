@@ -93,9 +93,7 @@ fn ray_color(ray: &Ray, depth: i32, world: &impl Hittable) -> Color {
     }
     let mut rec = HitRecord::default();
     if world.hit(ray, Interval::new_from(0.001, f32::INFINITY), &mut rec) {
-        // let normal = rec.get_normal();
-        // return Color::new_from(normal.x() + 1.0, normal.y() + 1.0, normal.z() + 1.0) * 0.5;
-        let direction: Point = Point::random_on_hemisphere(rec.get_normal());
+        let direction  = rec.get_normal() + Point::random_unit_vector();
         return ray_color(&Ray::new(rec.get_p(), direction), depth-1, world) * 0.5
     }
 
